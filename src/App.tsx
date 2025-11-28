@@ -777,7 +777,7 @@ export default function App() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
   const importDataInputRef = useRef<HTMLInputElement>(null); // For Restore
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<any>(null); // Changed to any for compatibility
 
   const [currentModeData, setCurrentModeData] = useState<ModeData | null>(null);
 
@@ -1116,7 +1116,10 @@ export default function App() {
             if (q.type === 'judgment') {
                 isCorrect = isJudgmentCorrect(userAns, q.answer);
             } else {
-                isCorrect = userAns.replace(/\s/g, '').toUpperCase() === q.answer.replace(/\s/g, '').toUpperCase();
+                // 移除非法字符后比对
+                const cleanUser = userAns.replace(/[^A-Z\u4e00-\u9fa5]/g, '').toUpperCase();
+                const cleanReal = q.answer.replace(/[^A-Z\u4e00-\u9fa5]/g, '').toUpperCase();
+                isCorrect = cleanUser === cleanReal;
             }
             
             if (isCorrect) score++;
